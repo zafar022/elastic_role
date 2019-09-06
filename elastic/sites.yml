@@ -1,0 +1,5 @@
+---
+- hosts: web-server
+  become: yes
+  roles: 
+    - redis

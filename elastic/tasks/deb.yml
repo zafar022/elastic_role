@@ -1,0 +1,40 @@
+---
+- name: Ensure the system can use the HTTPS transport for APT.
+  stat:
+    path: /usr/lib/apt/methods/https
+  register: apt_https_transport
+
+- name: Install APT HTTPS transport.
+  apt:
+    name: apt-transport-https
+    state: present
+    update_cache: yes
+  
+- name: Install Default Java (Debian/Ubuntu)
+  apt:
+    name: default-jdk
+    state: present
+
+- name: Add an Apt signing key, uses whichever key is at the URL
+  apt_key:
+    url:  https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+    
+- name: Docker | Add repo to APT sources
+  sudo: yes
+  shell: "echo deb https://artifacts.elastic.co/packages/{{ elasticsearch_version }}/apt stable main > /etc/apt/sources.list.d/elastic-7.x.list"
+    
+- name: apt-get update
+  apt:
+    update-cache: yes
+
+- name: Install 
+  apt:
+    name: elasticsearch
+    state: "{{ elasticsearch_package_state }}"
+
+  
+ 
+
+
+
